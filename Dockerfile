@@ -5,5 +5,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["deno", "task", "run"]
+CMD ["deno", "run", "--allow-net", "--allow-read", "main.ts"]
 
