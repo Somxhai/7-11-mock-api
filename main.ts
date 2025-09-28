@@ -20,9 +20,12 @@ const products = allRecords.map((row) => ({
   reorder_level: Number(row["Reorder_Level"] ?? 0),
   reorder_quantity: Number(row["Reorder_Quantity"] ?? 0),
   unit_price: parseFloat((row["Unit_Price"] ?? "0").replace(/^\$/, "").trim()),
-  date_received: row["Date_Received"],
-  last_order_date: row["Last_Order_Date"],
-  expiration_date: row["Expiration_Date"],
+
+  // Convert MM/DD/YYYY -> YYYY-MM-DD
+  date_received: new Date(row["Date_Received"]).toISOString().split("T")[0],
+  last_order_date: new Date(row["Last_Order_Date"]).toISOString().split("T")[0],
+  expiration_date: new Date(row["Expiration_Date"]).toISOString().split("T")[0],
+
   warehouse_location: row["Warehouse_Location"],
   sales_volume: Number(row["Sales_Volume"] ?? 0),
   inventory_turnover_rate: Number(row["Inventory_Turnover_Rate"] ?? 0),
@@ -51,7 +54,11 @@ app.get("/product/catalog", (c) => {
     ? batch[batch.length - 1].product_id
     : null;
 
-  console.log(batch.slice(0, 2));
+  console.log({
+    products: batch.slice(0, 2),
+    nextCursor,
+    limit,
+  });
   return c.json({
     products: batch,
     nextCursor,
